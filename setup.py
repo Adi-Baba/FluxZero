@@ -6,46 +6,54 @@ import os
 import subprocess
 import platform
 
-class BuildFluxZero(install):
-    def run(self):
-        # 1. Attempt Compilation
-        print("--- Building FluxZero Core ---")
-        cwd = os.path.dirname(os.path.abspath(__file__))
-        
-        system = platform.system()
-        try:
-            if system == "Windows":
-                # Run batch file
-                print("Detected Windows. Running compile_fz.bat...")
-                subprocess.check_call(["compile_fz.bat"], cwd=cwd, shell=True)
-                # Move dll to package dir
-                src_dll = os.path.join(cwd, "fluxzero.dll")
-                dst_dll = os.path.join(cwd, "fluxzero", "fluxzero.dll")
-                if os.path.exists(src_dll):
-                    if os.path.exists(dst_dll): os.remove(dst_dll)
-                    os.rename(src_dll, dst_dll)
-                    
-            else:
-                # Linux/Mac -> Run Make
-                print(f"Detected {system}. Running make...")
-                subprocess.check_call(["make"], cwd=cwd)
+def compile_native_lib():
+    """Compiles the native C++/Fortran core."""
+    print("--- Building FluxZero Core ---")
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    system = platform.system()
+    
+    try:
+        if system == "Windows":
+            # Run batch file
+            print("Detected Windows. Running compile_fz.bat...")
+            subprocess.check_call(["compile_fz.bat"], cwd=cwd, shell=True)
+            # Move dll to package dir
+            src_dll = os.path.join(cwd, "fluxzero.dll")
+            dst_dll = os.path.join(cwd, "fluxzero", "fluxzero.dll")
+            if os.path.exists(src_dll):
+                if os.path.exists(dst_dll): os.remove(dst_dll)
+                os.rename(src_dll, dst_dll)
                 
-        except Exception as e:
-            print(f"[ERROR] Compilation failed: {e}")
-            print("FluxZero requires 'g++' and 'gfortran' to be installed.")
+        else:
+            # Linux/Mac -> Run Make
+            print(f"Detected {system}. Running make...")
+            subprocess.check_call(["make"], cwd=cwd)
             
-            # Robustness Check: Do we have a fallback binary?
-            expected_bin = "fluxzero.dll" if system == "Windows" else ("libfluxzero.dylib" if system == "Darwin" else "libfluxzero.so")
-            bin_path = os.path.join(cwd, "fluxzero", expected_bin)
-            
-            if os.path.exists(bin_path):
-                print(f"[WARNING] Compilation failed, but found existing binary '{expected_bin}'. Using it.")
-            else:
-                print(f"[FATAL] Compilation failed and no pre-existing binary found at {bin_path}.")
-                raise RuntimeError("FluxZero installation failed due to missing native library.") from e
+    except Exception as e:
+        print(f"[ERROR] Compilation failed: {e}")
+        print("FluxZero requires 'g++' and 'gfortran' to be installed.")
+        
+        # Robustness Check
+        expected_bin = "fluxzero.dll" if system == "Windows" else ("libfluxzero.dylib" if system == "Darwin" else "libfluxzero.so")
+        bin_path = os.path.join(cwd, "fluxzero", expected_bin)
+        
+        if os.path.exists(bin_path):
+            print(f"[WARNING] Compilation failed, but found existing binary '{expected_bin}'. Using it.")
+        else:
+            print(f"[FATAL] Compilation failed and no pre-existing binary found at {bin_path}.")
+            raise RuntimeError("FluxZero installation failed due to missing native library.") from e
 
-        # 2. Run standard install
-        install.run(self)
+class CustomBuildPy(build_py):
+    def run(self):
+        # Compile before copying python files (so the artifact is included)
+        compile_native_lib()
+        super().run()
+
+class CustomInstall(install):
+    def run(self):
+        # Legacy install mode support
+        compile_native_lib()
+        super().run()
 
 setup(
     name="fluxzero",
@@ -66,6 +74,7 @@ setup(
     ],
     python_requires='>=3.6',
     cmdclass={
-        'install': BuildFluxZero
+        'build_py': CustomBuildPy,
+        'install': CustomInstall
     }
 )
