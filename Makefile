@@ -3,7 +3,7 @@
 
 CXX = g++
 FC = gfortran
-CXXFLAGS = -O3 -fPIC -std=c++17 -shared
+CXXFLAGS = -O3 -fPIC -std=c++17 -shared -I src/cpp -I src/fortran
 FCFLAGS = -O3 -fPIC -shared
 LDFLAGS = -shared
 
@@ -25,7 +25,7 @@ FOR_OBJ = $(FOR_SRC:.f90=.o)
 all: $(TARGET)
 
 $(TARGET): $(FOR_OBJ) $(CPP_OBJ)
-	$(CXX) $(LDFLAGS) -o $@ $^ -lgfortran
+	$(CXX) $(LDFLAGS) -o $@ $^ -lgfortran -lquadmath
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
