@@ -1,14 +1,14 @@
-# FluxZero: Fluid Dynamics AI 🌊
-> **The Thermodynamic Learning Engine**.  
+# FluxZero: Fluid Dynamics AI
+> **A Fluid Dynamics based Machine Learning Engine**.  
 > *Built with O-ISH (Open Ideal Systems Hypothesis).*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/platform-win%20|%20linux-blue)](https://github.com/Adi-Baba/FluxZero)
-[![Status](https://img.shields.io/badge/status-production%20ready-brightgreen)]()
+[![Status](https://img.shields.io/badge/status-active-brightgreen)]()
 
-FluxZero is a revolutionary Reinforcement Learning engine that replaces "Artificial Neurons" with **Fluid Dynamics**. It treats decision-making as water flowing through a path of least resistance.
+FluxZero is a Reinforcement Learning engine that utilizes **Fluid Dynamics** principles instead of artificial neurons. It models decision-making as flow through a network, similar to hydraulic systems.
 
-Unlike Neural Networks (Black Box / Statistical), FluxZero is **Structural, Transparent, and Robust**.
+FluxZero aims to provide **Structural and Interpretable** models, offering an alternative to statistical Neural Networks for specific structured tasks.
 
 ---
 
