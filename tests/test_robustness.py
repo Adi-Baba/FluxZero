@@ -3,7 +3,7 @@ import os
 import ctypes
 
 # Add bindings
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bindings", "python"))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from fluxzero import FluidTree
 
 def test_robustness():
