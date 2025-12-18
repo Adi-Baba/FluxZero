@@ -25,7 +25,7 @@ FOR_OBJ = $(FOR_SRC:.f90=.o)
 all: $(TARGET)
 
 $(TARGET): $(FOR_OBJ) $(CPP_OBJ)
-	$(CXX) $(LDFLAGS) -o $@ $^ -lgfortran -lquadmath
+	$(CXX) $(LDFLAGS) -o $@ $^ -lgfortran -lquadmath -static-libgfortran -static-libgcc -static-libstdc++
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
