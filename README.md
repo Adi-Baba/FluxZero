@@ -14,11 +14,16 @@ FluxZero aims to provide **Structural and Interpretable** models, offering an al
 
 ## ⚡ Quick Install
 You can install FluxZero directly from GitHub using pip.
-*(Note: Requires `g++` and `gfortran` to build from source, or a pre-compiled DLL)*.
+
+**System Requirements:**
+- **Windows**: MinGW (`g++`, `gfortran`)
+- **Linux/Ubuntu**: `sudo apt install g++ gfortran`
+- **macOS**: `brew install gcc` (includes gfortran)
 
 ```bash
 pip install git+https://github.com/Adi-Baba/FluxZero.git
 ```
+The installer will automatically compile the core engine for your system.
 
 ## 🚀 Features (v1.1)
 - **🧠 Transparent Logic**: Trace every decision back to its root cause using the Fluid Tree.

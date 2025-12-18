@@ -1,20 +1,35 @@
 import ctypes
 import os
+import platform
 
-# Load DLL
-# When installed via pip, the DLL should be in the same directory as this __init__.py
-_dll_path = os.path.join(os.path.dirname(__file__), "fluxzero.dll")
+# Determine Library Name based on OS
+system = platform.system()
+lib_name = "fluxzero.dll"
+if system == "Linux":
+    lib_name = "libfluxzero.so"
+elif system == "Darwin": # macOS
+    lib_name = "libfluxzero.dylib"
+
+# Load Library
+# 1. Try local package directory (Preferred for pip install)
+_lib_path = os.path.join(os.path.dirname(__file__), lib_name)
 
 try:
-    _lib = ctypes.CDLL(_dll_path)
-except OSError:
-    # Fallback for development/manual layout
+    _lib = ctypes.CDLL(_lib_path)
+except OSError as e:
+    # 2. Fallback: Try finding it in path or working directory (Dev mode)
     try:
-        # Try local first
-         _lib = ctypes.CDLL(os.path.abspath("fluxzero.dll"))
+        if system == "Windows":
+             _lib = ctypes.CDLL(os.path.abspath(lib_name))
+        else:
+             _lib = ctypes.CDLL(lib_name)
     except OSError:
-         # Try parent dir (old layout)
-         _lib = ctypes.CDLL(os.path.abspath("../../fluxzero.dll"))
+        # 3. Try parent directory (Old dev layout)
+        try: 
+            parent_lib = os.path.join(os.path.dirname(__file__), "..", "..", lib_name)
+            _lib = ctypes.CDLL(os.path.abspath(parent_lib))
+        except OSError:
+             raise OSError(f"Could not load FluxZero library ({lib_name}). Ensure g++ and gfortran are installed and the package was built correctly. Error: {e}")
 
 # Define Arg Types
 _lib.FZ_CreateTree.restype = ctypes.c_void_p
