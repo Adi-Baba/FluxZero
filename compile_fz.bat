@@ -14,7 +14,7 @@ g++ -c src/c_api/fz_bridge.cpp -o src/c_api/fz_bridge.o -I src/cpp
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo [4/4] Linking FluxZero DLL...
-g++ -shared -o fluxzero.dll src/fortran/fz_graph.o src/cpp/fz_engine.o src/c_api/fz_bridge.o -static-libgfortran -static-libgcc -static-libstdc++ -lgfortran -lquadmath
+g++ -shared -o fluxzero.dll src/fortran/fz_graph.o src/cpp/fz_engine.o src/c_api/fz_bridge.o -static -lgfortran -lquadmath
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo --- Build Success! Created fluxzero.dll ---
