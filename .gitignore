@@ -1,0 +1,12 @@
+__pycache__/
+*.o
+*.obj
+# *.dll # Commented out to allow shipping the pre-compiled engine for pip install
+*.so
+*.dylib
+*.mod
+*.flux
+*.flux.meta
+*.exe
+tests/__pycache__/
+bindings/python/__pycache__/
